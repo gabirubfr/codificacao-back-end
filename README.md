@@ -45,7 +45,7 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 | :--- | :--- | :--- | :--- |
 | `GET` | `/status` | Verifica a integridade e status da API | N/A |
 | `GET` | `/convidados` | Lista os convidados | N/A |
-| `POST` | `/convidados` | Cadastra um novo convidado | `{"nome": "Yuri", "idade": 20}` |
+| `POST` | `/convidados` | Cadastra um novo convidado | `{"nome": "Yuri", "idade": 21}` |
 
 ---
 
