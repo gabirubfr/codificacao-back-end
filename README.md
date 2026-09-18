@@ -1,6 +1,6 @@
 # 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework
 
-Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a adoção do framework **NestJS** com TypeScript, DTOs e arquitetura modular.
+Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a adoção do framework **NestJS** com TypeScript, arquitetura em camadas (Controller + Service) e operações completas de CRUD.
 
 ---
 
@@ -30,22 +30,25 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **Injeção de Dependência (DI):** Estruturação de componentes usando decorators como `@Injectable()`, `@Module()` e `@Controller()`.
 * **Suíte de Testes:** Execução e validação de testes unitários base (`app.controller.spec.ts`).
 
-### 🟣 Parte 8: Route Handlers, DTOs e Gestão de Recursos
-* **Endpoint de Status (`/status`):** Endpoint de checagem de saúde da API (`AppController`).
-* **Gerenciamento de Convidados (`/convidados`):**
-  * **GET `/convidados`:** Retorna a lista de convidados cadastrados.
-  * **POST `/convidados`:** Processa e valida o recebimento de novos convidados usando `@Body()`.
-* **Data Transfer Object (DTO):** Criação do `CriarConvidadoDto` (`nome` e `idade`) para garantir a tipagem do contrato de entrada.
+### 🟣 Parte 08-09: Arquitetura CRUD e Camada de Serviço (`/convidados`)
+* **Separação de Responsabilidades:**
+  * `ConvidadosController`: Responsável por expor as rotas HTTP e validar requisições.
+  * `ConvidadosService`: Concentra a regra de negócio e manipulação dos dados armazenados em memória.
+* **Contrato de Dados (DTO):** Validação de entrada via `CriarConvidadoDto` (`nome` e `idade`).
+* **Tratamento de Exceções:** Uso de `NotFoundException` para tratar buscas por IDs inexistentes.
+* **Status HTTP:** Implementação do status `204 No Content` para deleções de recursos.
 
 ---
 
 ## 🚦 Endpoints da Aplicação
 
-| Método | Rota | Descrição | Payload (Body) |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/status` | Verifica a integridade e status da API | N/A |
-| `GET` | `/convidados` | Lista os convidados | N/A |
-| `POST` | `/convidados` | Cadastra um novo convidado | `{"nome": "Yuri", "idade": 21}` |
+| Método | Rota | Descrição | Status Code | Payload (Body) / Params |
+| :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/status` | Verifica a integridade da API | `200 OK` | N/A |
+| `GET` | `/convidados` | Lista todos os convidados | `200 OK` | N/A |
+| `POST` | `/convidados` | Cadastra um novo convidado | `201 Created` | `{"nome": "Yuri", "idade": 21}` |
+| `PATCH` | `/convidados` | Atualiza a idade de um convidado | `200 OK` | Query/Param: `id`, Body: `{"idade": 21}` |
+| `DELETE` | `/convidados/:id` | Remove um convidado pelo ID | `204 No Content` | Param: `id` |
 
 ---
 
