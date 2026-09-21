@@ -38,3 +38,55 @@ curl -i -X POST http://localhost:3000/convidados \
 📨 Extração de Payload com @Body() ➔ Mapeamento direto dos dados enviados no corpo do pacote HTTP JSON para instâncias no controlador.
 
 🛣️ Roteamento Modular ➔ Separação clara de responsabilidades com o AppController gerenciando o status e o ConvidadosController manipulando a coleção de convidados.
+
+## 🧪 Testando as Rotas no Insomnia
+
+Abaixo estão as instruções para testar e validar o CRUD completo da aplicação utilizando o **Insomnia** (ou ferramentas similares como Postman e Hoppscotch):
+
+### 1. Consultar Integridade da API
+* **Método:** `GET`
+* **URL:** `http://localhost:3000/status`
+* **Descrição:** Retorna a mensagem de confirmação do estado da aplicação (`Status: Ativo!`).
+
+### 2. Listar Convidados (`Read`)
+* **Método:** `GET`
+* **URL:** `http://localhost:3000/convidados`
+* **Descrição:** Retorna a lista completa com todos os convidados cadastrados no array em memória.
+
+### 3. Cadastrar Novo Convidado (`Create`)
+* **Método:** `POST`
+* **URL:** `http://localhost:3000/convidados`
+* **Header:** `Content-Type: application/json`
+* **Body (JSON):**
+  ```json
+  {
+    "nome": "Yuri Marques",
+    "idade": 21
+  }
+
+  Resposta Esperada: Status 201 Created retornando a mensagem de confirmação e os dados inseridos.
+
+4. Atualizar Idade do Convidado (Update)
+Método: PATCH
+
+Exemplo:
+URL: http://localhost:3000/convidados/1
+
+Header: Content-Type: application/json
+
+Body (JSON):
+
+JSON
+{
+  "idade": 21
+}
+Descrição: Altera apenas o campo idade do convidado correspondente ao id passado como parâmetro de consulta (Query Param).
+
+5. Remover Convidado (Delete)
+Método: DELETE
+
+URL: http://localhost:3000/convidados/1
+
+Descrição: Remove permanentemente o convidado referente ao id informado na URL (Route Param).
+
+Resposta Esperada: Status 204 No Content (sem corpo na resposta HTTP).
