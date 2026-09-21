@@ -1,4 +1,4 @@
-# 🎟️ Parte 8: Manipulação de DTOs, Decorators de Payload e Novos Endpoints (NestJS)
+# 🎟️ Parte 8 e 9: Manipulação de DTOs, Decorators de Payload e Novos Endpoints (NestJS)
 
 Esta etapa do projeto foca na criação de APIs REST funcionais no NestJS utilizando **Data Transfer Objects (DTOs)** para estruturação de payloads em requisições `POST`, além do mapeamento de múltiplos controladores com os decorators `@Body()`, `@Get()` e `@Post()`.
 
