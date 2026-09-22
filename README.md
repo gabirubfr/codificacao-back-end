@@ -1,6 +1,6 @@
 # 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework
 
-Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a adoção do framework **NestJS** com TypeScript, arquitetura em camadas (Controller + Service) e operações completas de CRUD.
+Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), serviços desacoplados e CRUD completo.
 
 ---
 
@@ -9,8 +9,8 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **Runtime:** Node.js (ES Modules)
 * **Linguagem:** TypeScript / JavaScript
 * **Framework Backend:** NestJS v12
-* **Gerenciamento de Ambiente:** `dotenv`
 * **Testes e Qualidade:** Vitest, Prettier, Oxlint
+* **Cliente de Testes HTTP:** Insomnia / Postman
 
 ---
 
@@ -32,11 +32,17 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 
 ### 🟣 Parte 08-09: Arquitetura CRUD e Camada de Serviço (`/convidados`)
 * **Separação de Responsabilidades:**
-  * `ConvidadosController`: Responsável por expor as rotas HTTP e validar requisições.
-  * `ConvidadosService`: Concentra a regra de negócio e manipulação dos dados armazenados em memória.
-* **Contrato de Dados (DTO):** Validação de entrada via `CriarConvidadoDto` (`nome` e `idade`).
-* **Tratamento de Exceções:** Uso de `NotFoundException` para tratar buscas por IDs inexistentes.
-* **Status HTTP:** Implementação do status `204 No Content` para deleções de recursos.
+  * `ConvidadosController`: Exposição e gerenciamento de rotas HTTP.
+  * `ConvidadosService`: Regras de negócio, busca e manipulação de estado em memória.
+* **Contrato de Dados (DTO):** Validação e tipagem das requisições via `CriarConvidadoDto` (`nome` e `idade`).
+* **Tratamento de Exceções:** Uso do `NotFoundException` do NestJS para buscas de recursos inexistentes.
+
+### 🟠 Parte 10: Acervo de Livros e Pipes de Validação (`/livros`)
+* **Recurso de Livros:**
+  * `LivrosService`: Gerenciamento do acervo de livros em memória e lógica de busca por identificador único (`findById`).
+  * `LivrosController`: Rota de consulta por parâmetro de URL (`GET /livros/:id`).
+* **Pipes do NestJS (`ParseIntPipe`):** Transformação e validação automática do parâmetro da URL (`id`) de `string` para `number` antes da execução do controller.
+* **Resiliência e Erros HTTP:** Disparo de `NotFoundException` para recursos não localizados no acervo.
 
 ---
 
@@ -47,8 +53,31 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 | `GET` | `/status` | Verifica a integridade da API | `200 OK` | N/A |
 | `GET` | `/convidados` | Lista todos os convidados | `200 OK` | N/A |
 | `POST` | `/convidados` | Cadastra um novo convidado | `201 Created` | `{"nome": "Yuri", "idade": 21}` |
-| `PATCH` | `/convidados` | Atualiza a idade de um convidado | `200 OK` | Query/Param: `id`, Body: `{"idade": 21}` |
-| `DELETE` | `/convidados/:id` | Remove um convidado pelo ID | `204 No Content` | Param: `id` |
+| `PATCH` | `/convidados` | Atualiza a idade de um convidado | `200 OK` | Query: `id`, Body: `{"idade": 21}` |
+| `DELETE` | `/convidados/:id` | Remove um convidado pelo ID | `204 No Content` | Route Param: `id` |
+| `GET` | `/livros/:id` | Busca um livro específico pelo ID | `200 OK` | Route Param: `id` (numérico) |
+
+---
+
+## 🧪 Testando as Rotas no Insomnia
+
+### 1. Consultar Integridade da API
+* **Método:** `GET`
+* **URL:** `http://localhost:3000/status`
+
+### 2. Gerenciamento de Convidados (`/convidados`)
+* **Listar (`GET`):** `http://localhost:3000/convidados`
+* **Criar (`POST`):** `http://localhost:3000/convidados`  
+  * Body: `{"nome": "Yuri Marques", "idade": 21}`
+* **Atualizar Idade (`PATCH`):** `http://localhost:3000/convidados?id=1`  
+  * Body: `{"idade": 21}`
+* **Remover (`DELETE`):** `http://localhost:3000/convidados/1`
+
+### 3. Acervo de Livros (`/livros`)
+* **Buscar Livro por ID (`GET`):** `http://localhost:3000/livros/1`
+  * **Exemplo Sucesso:** Retorna o objeto do livro (ex: *O Senhor dos Anéis*).
+  * **Exemplo Não Encontrado (404):** `http://localhost:3000/livros/999` (Retorna `NotFoundException`).
+  * **Exemplo ID Inválido (400):** `http://localhost:3000/livros/abc` (`ParseIntPipe` invalida a entrada).
 
 ---
 
