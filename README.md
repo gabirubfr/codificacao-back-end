@@ -1,6 +1,6 @@
 # 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework
 
-Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), serviços desacoplados e CRUD completo.
+Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer e validações avançadas.
 
 ---
 
@@ -9,6 +9,7 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **Runtime:** Node.js (ES Modules)
 * **Linguagem:** TypeScript / JavaScript
 * **Framework Backend:** NestJS v12
+* **Upload e Mídia:** Multer, `uuid`
 * **Testes e Qualidade:** Vitest, Prettier, Oxlint
 * **Cliente de Testes HTTP:** Insomnia / Postman
 
@@ -38,46 +39,49 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **Tratamento de Exceções:** Uso do `NotFoundException` do NestJS para buscas de recursos inexistentes.
 
 ### 🟠 Parte 10: Acervo de Livros e Pipes de Validação (`/livros`)
-* **Recurso de Livros:**
-  * `LivrosService`: Gerenciamento do acervo de livros em memória e lógica de busca por identificador único (`findById`).
-  * `LivrosController`: Rota de consulta por parâmetro de URL (`GET /livros/:id`).
+* **Recurso de Livros:** Lógica de busca por identificador único (`findById`).
 * **Pipes do NestJS (`ParseIntPipe`):** Transformação e validação automática do parâmetro da URL (`id`) de `string` para `number` antes da execução do controller.
-* **Resiliência e Erros HTTP:** Disparo de `NotFoundException` para recursos não localizados no acervo.
+
+### 🔴 Parte 11: Upload de Mídia e Interceptors (`/midia`)
+* **Upload de Arquivos:** Integração do `FileInterceptor` e `diskStorage` via Multer para salvar imagens em `./uploads`.
+* **UUID e Segurança:** Identificadores únicos (`uuidv4`) para evitar colisão de nomes.
+* **Filtros e Limites:** Validação de tipo MIME (apenas `jpg`, `jpeg`, `png`, `gif`, `webp`) e restrição de tamanho máximo para 2MB.
 
 ---
 
 ## 🚦 Endpoints da Aplicação
 
-| Método | Rota | Descrição | Status Code | Payload (Body) / Params |
+| Método | Rota | Descrição | Status Code | Payload / Params |
 | :--- | :--- | :--- | :--- | :--- |
 | `GET` | `/status` | Verifica a integridade da API | `200 OK` | N/A |
 | `GET` | `/convidados` | Lista todos os convidados | `200 OK` | N/A |
-| `POST` | `/convidados` | Cadastra um novo convidado | `201 Created` | `{"nome": "Yuri", "idade": 21}` |
+| `POST` | `/convidados` | Cadastra um novo convidado | `201 Created` | Body: `{"nome": "Yuri", "idade": 21}` |
 | `PATCH` | `/convidados` | Atualiza a idade de um convidado | `200 OK` | Query: `id`, Body: `{"idade": 21}` |
 | `DELETE` | `/convidados/:id` | Remove um convidado pelo ID | `204 No Content` | Route Param: `id` |
 | `GET` | `/livros/:id` | Busca um livro específico pelo ID | `200 OK` | Route Param: `id` (numérico) |
+| `POST` | `/midia/upload` | Realiza upload de uma imagem | `201 Created` | Multipart Form: `arquivo` |
 
 ---
 
 ## 🧪 Testando as Rotas no Insomnia
 
 ### 1. Consultar Integridade da API
-* **Método:** `GET`
-* **URL:** `http://localhost:3000/status`
+* **`GET http://localhost:3000/status`**
 
 ### 2. Gerenciamento de Convidados (`/convidados`)
-* **Listar (`GET`):** `http://localhost:3000/convidados`
-* **Criar (`POST`):** `http://localhost:3000/convidados`  
-  * Body: `{"nome": "Yuri Marques", "idade": 21}`
-* **Atualizar Idade (`PATCH`):** `http://localhost:3000/convidados?id=1`  
-  * Body: `{"idade": 21}`
-* **Remover (`DELETE`):** `http://localhost:3000/convidados/1`
+* **`GET http://localhost:3000/convidados`**
+* **`POST http://localhost:3000/convidados`** ➔ Body JSON: `{"nome": "Yuri Marques", "idade": 21}`
+* **`PATCH http://localhost:3000/convidados?id=1`** ➔ Body JSON: `{"idade": 21}`
+* **`DELETE http://localhost:3000/convidados/1`**
 
 ### 3. Acervo de Livros (`/livros`)
-* **Buscar Livro por ID (`GET`):** `http://localhost:3000/livros/1`
-  * **Exemplo Sucesso:** Retorna o objeto do livro (ex: *O Senhor dos Anéis*).
-  * **Exemplo Não Encontrado (404):** `http://localhost:3000/livros/999` (Retorna `NotFoundException`).
-  * **Exemplo ID Inválido (400):** `http://localhost:3000/livros/abc` (`ParseIntPipe` invalida a entrada).
+* **`GET http://localhost:3000/livros/1`** (Validação via `ParseIntPipe`)
+
+### 4. Upload de Mídia (`/midia`)
+* **`POST http://localhost:3000/midia/upload`**
+  * **Body:** `Multipart Form`
+  * **Key:** `arquivo` (Tipo: File)
+  * **Value:** Imagem local (`.png`, `.jpg`, etc.)
 
 ---
 
