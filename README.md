@@ -1,6 +1,6 @@
 # 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework
 
-Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer e validações avançadas.
+Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer e validações de segurança por Headers.
 
 ---
 
@@ -47,11 +47,16 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **UUID e Segurança:** Identificadores únicos (`uuidv4`) para evitar colisão de nomes.
 * **Filtros e Limites:** Validação de tipo MIME (apenas `jpg`, `jpeg`, `png`, `gif`, `webp`) e restrição de tamanho máximo para 2MB.
 
+### 🟡 Parte 12: Autenticação por Headers (`/secreto`)
+* **Validação via Headers:** Extração do parâmetro `x-api-key` da requisição com `@Headers()`.
+* **Injeção de Resposta (`@Res`):** Manipulação direta de respostas HTTP e cabeçalhos customizados (`x-auth-status`).
+* **Tratamento de Permissão:** Status `200 OK` para acessos válidos e `403 Forbidden` para acessos não autorizados.
+
 ---
 
 ## 🚦 Endpoints da Aplicação
 
-| Método | Rota | Descrição | Status Code | Payload / Params |
+| Método | Rota | Descrição | Status Code | Payload / Params / Headers |
 | :--- | :--- | :--- | :--- | :--- |
 | `GET` | `/status` | Verifica a integridade da API | `200 OK` | N/A |
 | `GET` | `/convidados` | Lista todos os convidados | `200 OK` | N/A |
@@ -60,6 +65,7 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 | `DELETE` | `/convidados/:id` | Remove um convidado pelo ID | `204 No Content` | Route Param: `id` |
 | `GET` | `/livros/:id` | Busca um livro específico pelo ID | `200 OK` | Route Param: `id` (numérico) |
 | `POST` | `/midia/upload` | Realiza upload de uma imagem | `201 Created` | Multipart Form: `arquivo` |
+| `GET` | `/secreto` | Rota protegida por chave | `200 OK` / `403` | Header: `x-api-key: neyma` |
 
 ---
 
@@ -78,10 +84,11 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **`GET http://localhost:3000/livros/1`** (Validação via `ParseIntPipe`)
 
 ### 4. Upload de Mídia (`/midia`)
-* **`POST http://localhost:3000/midia/upload`**
-  * **Body:** `Multipart Form`
-  * **Key:** `arquivo` (Tipo: File)
-  * **Value:** Imagem local (`.png`, `.jpg`, etc.)
+* **`POST http://localhost:3000/midia/upload`** ➔ Multipart Form: `arquivo` (Imagem)
+
+### 5. Área Secreta / Autenticação (`/secreto`)
+* **`GET http://localhost:3000/secreto`**  
+  * **Header:** `x-api-key: neyma`
 
 ---
 
