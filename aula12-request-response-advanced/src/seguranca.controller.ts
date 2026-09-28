@@ -2,6 +2,7 @@ import { Controller, Get, Headers, Res } from "@nestjs/common";
 import type { Response } from 'express';
 import { timestamp } from "rxjs";
 
+
 @Controller('secreto')
 export class SegurancaController{
     @Get()
