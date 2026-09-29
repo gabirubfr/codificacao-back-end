@@ -1,6 +1,6 @@
 # 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework
 
-Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer e validações de segurança por Headers.
+Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer, autenticação por Headers e Middlewares de controle de acesso.
 
 ---
 
@@ -52,12 +52,19 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **Injeção de Resposta (`@Res`):** Manipulação direta de respostas HTTP e cabeçalhos customizados (`x-auth-status`).
 * **Tratamento de Permissão:** Status `200 OK` para acessos válidos e `403 Forbidden` para acessos não autorizados.
 
+### 🟣 Parte 13: Middlewares e Controle de Privilégios (`LoggerMiddleware`)
+* **Middlewares Customizados:** Interceptação global/específica de requisições implementando `NestMiddleware`.
+* **Logging Automático:** Exibição detalhada de requisições no console (`[LOG] Método | Rota`).
+* **Validação de Role (`x-user-role`):** Restrição de rotas administrativas apenas para usuários com permissão de `supervisor`.
+
 ---
 
 ## 🚦 Endpoints da Aplicação
 
 | Método | Rota | Descrição | Status Code | Payload / Params / Headers |
 | :--- | :--- | :--- | :--- | :--- |
+| `GET` | `/` | Rota pública principal | `200 OK` | N/A |
+| `GET` | `/admin` | Painel administrativo protegido | `200 OK` / `403` | Header: `x-user-role: supervisor` |
 | `GET` | `/status` | Verifica a integridade da API | `200 OK` | N/A |
 | `GET` | `/convidados` | Lista todos os convidados | `200 OK` | N/A |
 | `POST` | `/convidados` | Cadastra um novo convidado | `201 Created` | Body: `{"nome": "Yuri", "idade": 21}` |
@@ -71,24 +78,27 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 
 ## 🧪 Testando as Rotas no Insomnia
 
-### 1. Consultar Integridade da API
+### 1. Rotas do App (`/` e `/admin`)
+* **`GET http://localhost:3000/`** (Pública)
+* **`GET http://localhost:3000/admin`** ➔ Header: `x-user-role: supervisor`
+
+### 2. Consultar Integridade da API
 * **`GET http://localhost:3000/status`**
 
-### 2. Gerenciamento de Convidados (`/convidados`)
+### 3. Gerenciamento de Convidados (`/convidados`)
 * **`GET http://localhost:3000/convidados`**
 * **`POST http://localhost:3000/convidados`** ➔ Body JSON: `{"nome": "Yuri Marques", "idade": 21}`
 * **`PATCH http://localhost:3000/convidados?id=1`** ➔ Body JSON: `{"idade": 21}`
 * **`DELETE http://localhost:3000/convidados/1`**
 
-### 3. Acervo de Livros (`/livros`)
+### 4. Acervo de Livros (`/livros`)
 * **`GET http://localhost:3000/livros/1`** (Validação via `ParseIntPipe`)
 
-### 4. Upload de Mídia (`/midia`)
+### 5. Upload de Mídia (`/midia`)
 * **`POST http://localhost:3000/midia/upload`** ➔ Multipart Form: `arquivo` (Imagem)
 
-### 5. Área Secreta / Autenticação (`/secreto`)
-* **`GET http://localhost:3000/secreto`**  
-  * **Header:** `x-api-key: neyma`
+### 6. Área Secreta / Autenticação (`/secreto`)
+* **`GET http://localhost:3000/secreto`** ➔ Header: `x-api-key: neyma`
 
 ---
 
