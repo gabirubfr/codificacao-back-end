@@ -19,4 +19,12 @@ export class AppController {
       data: new Date(),
     }
   }
+
+  @Get('secret')
+  getSecret(){
+    return {
+      message: 'Bem-vindo a rota secreta do cachorro!',
+      data: new Date(),
+    }
+  }
 }
