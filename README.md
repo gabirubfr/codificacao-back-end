@@ -52,10 +52,11 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **Injeção de Resposta (`@Res`):** Manipulação direta de respostas HTTP e cabeçalhos customizados (`x-auth-status`).
 * **Tratamento de Permissão:** Status `200 OK` para acessos válidos e `403 Forbidden` para acessos não autorizados.
 
-### 🟣 Parte 13: Middlewares e Controle de Privilégios (`LoggerMiddleware`)
-* **Middlewares Customizados:** Interceptação global/específica de requisições implementando `NestMiddleware`.
-* **Logging Automático:** Exibição detalhada de requisições no console (`[LOG] Método | Rota`).
-* **Validação de Role (`x-user-role`):** Restrição de rotas administrativas apenas para usuários com permissão de `supervisor`.
+### 🟣 Parte 13: Middlewares e Controle Multi-Rota (`LoggerMiddleware`)
+* **Middlewares Customizados:** Interceptação global utilizando `NestMiddleware` e leitura de `req.originalUrl`.
+* **Verificação Condicional por Rota:**
+  * Rota `/secret`: Exige o header `api-key-dog: cachorro`.
+  * Rota `/admin`: Exige o header `api-key-admin: administrator`.
 
 ---
 
@@ -64,7 +65,8 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 | Método | Rota | Descrição | Status Code | Payload / Params / Headers |
 | :--- | :--- | :--- | :--- | :--- |
 | `GET` | `/` | Rota pública principal | `200 OK` | N/A |
-| `GET` | `/admin` | Painel administrativo protegido | `200 OK` / `403` | Header: `x-user-role: supervisor` |
+| `GET` | `/admin` | Painel administrativo protegido | `200 OK` / `403` | Header: `api-key-admin: administrator` |
+| `GET` | `/secret` | Rota secreta do sistema | `200 OK` / `403` | Header: `api-key-dog: cachorro` |
 | `GET` | `/status` | Verifica a integridade da API | `200 OK` | N/A |
 | `GET` | `/convidados` | Lista todos os convidados | `200 OK` | N/A |
 | `POST` | `/convidados` | Cadastra um novo convidado | `201 Created` | Body: `{"nome": "Yuri", "idade": 21}` |
@@ -78,9 +80,10 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 
 ## 🧪 Testando as Rotas no Insomnia
 
-### 1. Rotas do App (`/` e `/admin`)
+### 1. Rotas do App (`/`, `/admin` e `/secret`)
 * **`GET http://localhost:3000/`** (Pública)
-* **`GET http://localhost:3000/admin`** ➔ Header: `x-user-role: supervisor`
+* **`GET http://localhost:3000/admin`** ➔ Header: `api-key-admin: administrator`
+* **`GET http://localhost:3000/secret`** ➔ Header: `api-key-dog: cachorro`
 
 ### 2. Consultar Integridade da API
 * **`GET http://localhost:3000/status`**
