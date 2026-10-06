@@ -4,7 +4,7 @@ export const config = {
 export default async function handler(req: Request) {
     const inicio = Date.now();
     const vercelId = req.headers.get('x-vercel-id') || 'N/A';
-    const regiao = vercelId ? vercelId.split('::')[0] : (process.env.VERCEL_REGION || 'local-dev')
+    const regiao = vercelId ? vercelId.split('::')[0] : 'local-dev';
 
     return new Response(
         JSON.stringify({
@@ -15,7 +15,7 @@ export default async function handler(req: Request) {
         }),
         {
             status: 200,
-            headers: {'conten-type': 'application/json'},
+            headers: {'content-type': 'application/json'},
         }
     );
 }
