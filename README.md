@@ -1,12 +1,12 @@
-# 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework
+# 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework & Edge Serverless
 
-Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer, autenticação por Headers e Middlewares de controle de acesso.
+Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer, autenticação por Headers, Middlewares de controle de acesso e **Edge Serverless Functions**.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-* **Runtime:** Node.js (ES Modules)
+* **Runtime:** Node.js (ES Modules) & Vercel Edge Runtime
 * **Linguagem:** TypeScript / JavaScript
 * **Framework Backend:** NestJS v12
 * **Upload e Mídia:** Multer, `uuid`
@@ -58,6 +58,10 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
   * Rota `/secret`: Exige o header `api-key-dog: cachorro`.
   * Rota `/admin`: Exige o header `api-key-admin: administrator`.
 
+### ⚡ Parte 14: Serverless e Edge Functions (`/api/hora-servidor`)
+* **Edge Runtime:** Execução sem servidor persistente para alta performance e baixa latência.
+* **Inspeção de Infraestrutura:** Identificação da região física de execução (`x-vercel-id`) e horário local do servidor.
+
 ---
 
 ## 🚦 Endpoints da Aplicação
@@ -75,32 +79,36 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 | `GET` | `/livros/:id` | Busca um livro específico pelo ID | `200 OK` | Route Param: `id` (numérico) |
 | `POST` | `/midia/upload` | Realiza upload de uma imagem | `201 Created` | Multipart Form: `arquivo` |
 | `GET` | `/secreto` | Rota protegida por chave | `200 OK` / `403` | Header: `x-api-key: neyma` |
+| `GET` | `/api/hora-servidor` | Edge Function: Horário e Região | `200 OK` | N/A |
 
 ---
 
 ## 🧪 Testando as Rotas no Insomnia
 
-### 1. Rotas do App (`/`, `/admin` e `/secret`)
+### 1. Edge Function (`/api/hora-servidor`)
+* **`GET http://localhost:3000/api/hora-servidor`**
+
+### 2. Rotas do App (`/`, `/admin` e `/secret`)
 * **`GET http://localhost:3000/`** (Pública)
 * **`GET http://localhost:3000/admin`** ➔ Header: `api-key-admin: administrator`
 * **`GET http://localhost:3000/secret`** ➔ Header: `api-key-dog: cachorro`
 
-### 2. Consultar Integridade da API
+### 3. Consultar Integridade da API
 * **`GET http://localhost:3000/status`**
 
-### 3. Gerenciamento de Convidados (`/convidados`)
+### 4. Gerenciamento de Convidados (`/convidados`)
 * **`GET http://localhost:3000/convidados`**
 * **`POST http://localhost:3000/convidados`** ➔ Body JSON: `{"nome": "Yuri Marques", "idade": 21}`
 * **`PATCH http://localhost:3000/convidados?id=1`** ➔ Body JSON: `{"idade": 21}`
 * **`DELETE http://localhost:3000/convidados/1`**
 
-### 4. Acervo de Livros (`/livros`)
+### 5. Acervo de Livros (`/livros`)
 * **`GET http://localhost:3000/livros/1`** (Validação via `ParseIntPipe`)
 
-### 5. Upload de Mídia (`/midia`)
+### 6. Upload de Mídia (`/midia`)
 * **`POST http://localhost:3000/midia/upload`** ➔ Multipart Form: `arquivo` (Imagem)
 
-### 6. Área Secreta / Autenticação (`/secreto`)
+### 7. Área Secreta / Autenticação (`/secreto`)
 * **`GET http://localhost:3000/secreto`** ➔ Header: `x-api-key: neyma`
 
 ---
@@ -111,8 +119,11 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 # 1. Instalar as dependências
 npm install
 
-# 2. Executar em modo de desenvolvimento
+# 2. Executar em modo de desenvolvimento NestJS
 npm run start:dev
 
-# 3. Executar os testes unitários
+# 3. Executar com ambiente Edge / Vercel Serverless
+npx vercel dev
+
+# 4. Executar os testes unitários
 npm run test
