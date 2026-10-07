@@ -1,6 +1,8 @@
+### 📄 README Geral do Projeto (Raiz - Parte 1 à Parte 15)
+
 # 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework & Edge Serverless
 
-Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer, autenticação por Headers, Middlewares de controle de acesso e **Edge Serverless Functions**.
+Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer, autenticação por Headers, Middlewares, Edge Serverless e **Tratamento de Exceções com Logger nativo**.
 
 ---
 
@@ -62,6 +64,11 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **Edge Runtime:** Execução sem servidor persistente para alta performance e baixa latência.
 * **Inspeção de Infraestrutura:** Identificação da região física de execução (`x-vercel-id`) e horário local do servidor.
 
+### 🟢 Parte 15: Módulo de Produtos e Logger Nativo (`/produtos`)
+* **Gerenciamento de Produtos:** Consulta de itens eletrônicos via `ProdutosService`.
+* **NestJS Logger:** Emissão de logs de aviso (`this.logger.warn`) para falhas de validação.
+* **Exceções HTTP Explícitas:** Lançamento direto de `BadRequestException` e `NotFoundException`.
+
 ---
 
 ## 🚦 Endpoints da Aplicação
@@ -80,35 +87,41 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 | `POST` | `/midia/upload` | Realiza upload de uma imagem | `201 Created` | Multipart Form: `arquivo` |
 | `GET` | `/secreto` | Rota protegida por chave | `200 OK` / `403` | Header: `x-api-key: neyma` |
 | `GET` | `/api/hora-servidor` | Edge Function: Horário e Região | `200 OK` | N/A |
+| `GET` | `/produtos/:id` | Busca um produto pelo ID | `200 OK` / `400` / `404` | Route Param: `id` (numérico) |
 
 ---
 
 ## 🧪 Testando as Rotas no Insomnia
 
-### 1. Edge Function (`/api/hora-servidor`)
+### 1. Módulo de Produtos (`/produtos`)
+* **`GET http://localhost:3000/produtos/1`** (Sucesso)
+* **`GET http://localhost:3000/produtos/abc`** (Retorna `400 Bad Request`)
+* **`GET http://localhost:3000/produtos/99`** (Retorna `404 Not Found`)
+
+### 2. Edge Function (`/api/hora-servidor`)
 * **`GET http://localhost:3000/api/hora-servidor`**
 
-### 2. Rotas do App (`/`, `/admin` e `/secret`)
+### 3. Rotas do App (`/`, `/admin` e `/secret`)
 * **`GET http://localhost:3000/`** (Pública)
 * **`GET http://localhost:3000/admin`** ➔ Header: `api-key-admin: administrator`
 * **`GET http://localhost:3000/secret`** ➔ Header: `api-key-dog: cachorro`
 
-### 3. Consultar Integridade da API
+### 4. Consultar Integridade da API
 * **`GET http://localhost:3000/status`**
 
-### 4. Gerenciamento de Convidados (`/convidados`)
+### 5. Gerenciamento de Convidados (`/convidados`)
 * **`GET http://localhost:3000/convidados`**
 * **`POST http://localhost:3000/convidados`** ➔ Body JSON: `{"nome": "Yuri Marques", "idade": 21}`
 * **`PATCH http://localhost:3000/convidados?id=1`** ➔ Body JSON: `{"idade": 21}`
 * **`DELETE http://localhost:3000/convidados/1`**
 
-### 5. Acervo de Livros (`/livros`)
+### 6. Acervo de Livros (`/livros`)
 * **`GET http://localhost:3000/livros/1`** (Validação via `ParseIntPipe`)
 
-### 6. Upload de Mídia (`/midia`)
+### 7. Upload de Mídia (`/midia`)
 * **`POST http://localhost:3000/midia/upload`** ➔ Multipart Form: `arquivo` (Imagem)
 
-### 7. Área Secreta / Autenticação (`/secreto`)
+### 8. Área Secreta / Autenticação (`/secreto`)
 * **`GET http://localhost:3000/secreto`** ➔ Header: `x-api-key: neyma`
 
 ---
@@ -122,8 +135,5 @@ npm install
 # 2. Executar em modo de desenvolvimento NestJS
 npm run start:dev
 
-# 3. Executar com ambiente Edge / Vercel Serverless
-npx vercel dev
-
-# 4. Executar os testes unitários
+# 3. Executar os testes unitários
 npm run test
