@@ -1,8 +1,5 @@
----
+### 📄 README Geral do Projeto (Raiz - Parte 1 à Parte 16)
 
-### 📄 2. README Geral do Projeto (Raiz - Parte 1 à Parte 16)
-
-```markdown
 # 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework & Edge Serverless
 
 Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer, autenticação por Headers, Middlewares, Edge Serverless, Logger e **Validação Schema-First com Zod**.
