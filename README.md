@@ -1,8 +1,11 @@
-### 📄 README Geral do Projeto (Raiz - Parte 1 à Parte 15)
+---
 
+### 📄 2. README Geral do Projeto (Raiz - Parte 1 à Parte 16)
+
+```markdown
 # 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework & Edge Serverless
 
-Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer, autenticação por Headers, Middlewares, Edge Serverless e **Tratamento de Exceções com Logger nativo**.
+Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer, autenticação por Headers, Middlewares, Edge Serverless, Logger e **Validação Schema-First com Zod**.
 
 ---
 
@@ -11,6 +14,7 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **Runtime:** Node.js (ES Modules) & Vercel Edge Runtime
 * **Linguagem:** TypeScript / JavaScript
 * **Framework Backend:** NestJS v12
+* **Validação de Schemas:** Zod
 * **Upload e Mídia:** Multer, `uuid`
 * **Testes e Qualidade:** Vitest, Prettier, Oxlint
 * **Cliente de Testes HTTP:** Insomnia / Postman
@@ -69,16 +73,21 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 * **NestJS Logger:** Emissão de logs de aviso (`this.logger.warn`) para falhas de validação.
 * **Exceções HTTP Explícitas:** Lançamento direto de `BadRequestException` e `NotFoundException`.
 
+### 🟡 Parte 16: Validação de Schemas com Zod (`/colaboradores`)
+* **Validação Declarativa:** Criação de schemas com Zod (`colaboradorSchema`).
+* **Custom Validation Pipe:** Implementação de `ZodValidationPipe` para interceptar e validar o `@Body()`.
+* **Formatação de Erros:** Respostas com status `400 Bad Request` contendo lista de campos e mensagens amigáveis.
+
 ---
 
 ## 🚦 Endpoints da Aplicação
 
 | Método | Rota | Descrição | Status Code | Payload / Params / Headers |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/` | Rota pública principal | `200 OK` | N/A |
+| `GET` | `/Status` | Verifica a integridade da API | `200 OK` | N/A |
+| `POST` | `/colaboradores` | Cadastra um colaborador validador por Zod | `201 Created` / `400` | Body: `{"nome", "email", "idade", "departamento"}` |
 | `GET` | `/admin` | Painel administrativo protegido | `200 OK` / `403` | Header: `api-key-admin: administrator` |
 | `GET` | `/secret` | Rota secreta do sistema | `200 OK` / `403` | Header: `api-key-dog: cachorro` |
-| `GET` | `/status` | Verifica a integridade da API | `200 OK` | N/A |
 | `GET` | `/convidados` | Lista todos os convidados | `200 OK` | N/A |
 | `POST` | `/convidados` | Cadastra um novo convidado | `201 Created` | Body: `{"nome": "Yuri", "idade": 21}` |
 | `PATCH` | `/convidados` | Atualiza a idade de um convidado | `200 OK` | Query: `id`, Body: `{"idade": 21}` |
@@ -93,43 +102,26 @@ Este repositório documenta a evolução prática da construção de APIs em Nod
 
 ## 🧪 Testando as Rotas no Insomnia
 
-### 1. Módulo de Produtos (`/produtos`)
-* **`GET http://localhost:3000/produtos/1`** (Sucesso)
-* **`GET http://localhost:3000/produtos/abc`** (Retorna `400 Bad Request`)
-* **`GET http://localhost:3000/produtos/99`** (Retorna `404 Not Found`)
+### 1. Validação com Zod (`/colaboradores`)
+* **`POST http://localhost:3000/colaboradores`**
+  * **Body Sucesso:** `{"nome": "Carlos Silva", "email": "carlos@empresa.com", "idade": 30, "departamento": "TI"}`
+  * **Body Erro:** `{"nome": "Ana", "email": "invalido", "idade": 12, "departamento": "Vendas"}`
 
-### 2. Edge Function (`/api/hora-servidor`)
+### 2. Status da Aplicação (`/Status`)
+* **`GET http://localhost:3000/Status`**
+
+### 3. Módulo de Produtos (`/produtos`)
+* **`GET http://localhost:3000/produtos/1`**
+
+### 4. Edge Function (`/api/hora-servidor`)
 * **`GET http://localhost:3000/api/hora-servidor`**
-
-### 3. Rotas do App (`/`, `/admin` e `/secret`)
-* **`GET http://localhost:3000/`** (Pública)
-* **`GET http://localhost:3000/admin`** ➔ Header: `api-key-admin: administrator`
-* **`GET http://localhost:3000/secret`** ➔ Header: `api-key-dog: cachorro`
-
-### 4. Consultar Integridade da API
-* **`GET http://localhost:3000/status`**
-
-### 5. Gerenciamento de Convidados (`/convidados`)
-* **`GET http://localhost:3000/convidados`**
-* **`POST http://localhost:3000/convidados`** ➔ Body JSON: `{"nome": "Yuri Marques", "idade": 21}`
-* **`PATCH http://localhost:3000/convidados?id=1`** ➔ Body JSON: `{"idade": 21}`
-* **`DELETE http://localhost:3000/convidados/1`**
-
-### 6. Acervo de Livros (`/livros`)
-* **`GET http://localhost:3000/livros/1`** (Validação via `ParseIntPipe`)
-
-### 7. Upload de Mídia (`/midia`)
-* **`POST http://localhost:3000/midia/upload`** ➔ Multipart Form: `arquivo` (Imagem)
-
-### 8. Área Secreta / Autenticação (`/secreto`)
-* **`GET http://localhost:3000/secreto`** ➔ Header: `x-api-key: neyma`
 
 ---
 
 ## 💻 Como Executar o Projeto
 
 ```bash
-# 1. Instalar as dependências
+# 1. Instalar as dependências (incluindo o Zod)
 npm install
 
 # 2. Executar em modo de desenvolvimento NestJS
