@@ -1,0 +1,17 @@
+{
+    "aluno":
+    {
+    "nome": "Daniel Vorcaro", 
+    "email": "vorcaromaster@gmail.com", 
+    "dataNascimento": "2000-01-01", 
+    "formaIngresso": "AC (Ampla Concorrência)" },
+
+    "professor":
+    {
+        "nome": "Alexandre Moraes",
+        "notaAluno": "8",
+        "numeroFaltas": "5",
+        "salaAgendada": "Informática",
+        "orientaçao": "Daniel Vorcaro"
+    }
+}
