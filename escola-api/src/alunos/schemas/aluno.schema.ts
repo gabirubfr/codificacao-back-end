@@ -16,7 +16,8 @@ export class Aluno {
     idade: number;
 
     @Prop({
-
+        required: true,
+        unique: true
     })
     matricula: string;
 
