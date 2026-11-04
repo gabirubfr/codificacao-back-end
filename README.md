@@ -1,127 +1,96 @@
-### 📄 README Geral do Projeto (Raiz - Parte 1 à Parte 16)
+```markdown
+# 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework, Edge Serverless & Projeto Escola API
 
-# 🚀 Jornada Backend: Do Node.js Nativo ao NestJS Framework & Edge Serverless
-
-Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos conceitos mais fundamentais de servidores HTTP nativos até a estruturação de uma API robusta e modular em **NestJS** com TypeScript, DTOs, Pipes de transformação (`ParseIntPipe`), upload de mídias com Multer, autenticação por Headers, Middlewares, Edge Serverless, Logger e **Validação Schema-First com Zod**.
+Este repositório documenta a evolução prática da construção de APIs em Node.js, partindo dos servidores HTTP nativos até a arquitetura modular em **NestJS v12**, upload de arquivos, Edge Functions, validações avançadas (Zod / class-validator) e o **Projeto À Parte: Escola API** com **MongoDB (Mongoose)**.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
 * **Runtime:** Node.js (ES Modules) & Vercel Edge Runtime
-* **Linguagem:** TypeScript / JavaScript
 * **Framework Backend:** NestJS v12
-* **Validação de Schemas:** Zod
+* **Banco de Dados / ODM:** MongoDB & Mongoose (`@nestjs/mongoose`)
+* **Linguagem:** TypeScript / JavaScript
+* **Validação de DTOs:** `class-validator`, `class-transformer`, `Zod`
 * **Upload e Mídia:** Multer, `uuid`
 * **Testes e Qualidade:** Vitest, Prettier, Oxlint
-* **Cliente de Testes HTTP:** Insomnia / Postman
+* **Cliente HTTP:** Insomnia / Postman
 
 ---
 
-## 📚 Módulos e Evolução do Projeto
+## 📚 Módulos e Evolução do Repositório
 
 ### 🟢 Parte 1 a 4: Fundamentos do Node.js Nativo
-* **Servidor HTTP Nativo:** Criação de servidores sem frameworks adicionais utilizando o módulo `http`.
-* **Roteamento e Cabeçalhos:** Manipulação manual de URLs, métodos HTTP e inclusão de headers de segurança (`X-Content-Type-Options`, `X-Frame-Options`).
-* **ES Modules:** Configuração nativa com `"type": "module"` no `package.json`.
+* Servidor HTTP nativo com módulo `http`, roteamento manual, headers de segurança e ES Modules (`"type": "module"`).
 
-### 🟡 Parte 5 & 6: Configuração, Variáveis de Ambiente e Segurança
-* **Gerenciamento de Variáveis:** Integração da biblioteca `dotenv` para isolar dados sensíveis e portas da aplicação.
-* **Refatoração Avançada:** Organização de middlewares e tratamento preventivo de exceções em rotas HTTP.
+### 🟡 Parte 5 & 6: Variáveis de Ambiente e Exceções
+* Gerenciamento de variáveis com `dotenv` e middlewares nativos de tratamento de exceções.
 
 ### 🔵 Parte 7: Migração para a Arquitetura NestJS
-* **Bootstrapping com NestJS:** Transição do servidor nativo para a infraestrutura moderna do Nest.
-* **Injeção de Dependência (DI):** Estruturação de componentes usando decorators como `@Injectable()`, `@Module()` e `@Controller()`.
-* **Suíte de Testes:** Execução e validação de testes unitários base (`app.controller.spec.ts`).
+* Transição para a infraestrutura moderna do NestJS com Injeção de Dependências (`@Injectable()`, `@Module()`, `@Controller()`).
 
-### 🟣 Parte 08-09: Arquitetura CRUD e Camada de Serviço (`/convidados`)
-* **Separação de Responsabilidades:**
-  * `ConvidadosController`: Exposição e gerenciamento de rotas HTTP.
-  * `ConvidadosService`: Regras de negócio, busca e manipulação de estado em memória.
-* **Contrato de Dados (DTO):** Validação e tipagem das requisições via `CriarConvidadoDto` (`nome` e `idade`).
-* **Tratamento de Exceções:** Uso do `NotFoundException` do NestJS para buscas de recursos inexistentes.
+### 🟣 Parte 08-09: CRUD & Camada de Serviço (`/convidados`)
+* Arquitetura em camadas, gerenciamento em memória e tratamento com `NotFoundException`.
 
-### 🟠 Parte 10: Acervo de Livros e Pipes de Validação (`/livros`)
-* **Recurso de Livros:** Lógica de busca por identificador único (`findById`).
-* **Pipes do NestJS (`ParseIntPipe`):** Transformação e validação automática do parâmetro da URL (`id`) de `string` para `number` antes da execução do controller.
+### 🟠 Parte 10: Pipes do NestJS (`/livros`)
+* Uso do `ParseIntPipe` nativo para transformação e validação de parâmetros numéricos de rota.
 
-### 🔴 Parte 11: Upload de Mídia e Interceptors (`/midia`)
-* **Upload de Arquivos:** Integração do `FileInterceptor` e `diskStorage` via Multer para salvar imagens em `./uploads`.
-* **UUID e Segurança:** Identificadores únicos (`uuidv4`) para evitar colisão de nomes.
-* **Filtros e Limites:** Validação de tipo MIME (apenas `jpg`, `jpeg`, `png`, `gif`, `webp`) e restrição de tamanho máximo para 2MB.
+### 🔴 Parte 11: Upload de Arquivos e Interceptors (`/midia`)
+* Upload de imagens via Multer com `FileInterceptor`, validação MIME (2MB) e UUIDs.
 
 ### 🟡 Parte 12: Autenticação por Headers (`/secreto`)
-* **Validação via Headers:** Extração do parâmetro `x-api-key` da requisição com `@Headers()`.
-* **Injeção de Resposta (`@Res`):** Manipulação direta de respostas HTTP e cabeçalhos customizados (`x-auth-status`).
-* **Tratamento de Permissão:** Status `200 OK` para acessos válidos e `403 Forbidden` para acessos não autorizados.
+* Validação via header `x-api-key` e controle fino de resposta HTTP com `@Res()`.
 
-### 🟣 Parte 13: Middlewares e Controle Multi-Rota (`LoggerMiddleware`)
-* **Middlewares Customizados:** Interceptação global utilizando `NestMiddleware` e leitura de `req.originalUrl`.
-* **Verificação Condicional por Rota:**
-  * Rota `/secret`: Exige o header `api-key-dog: cachorro`.
-  * Rota `/admin`: Exige o header `api-key-admin: administrator`.
+### 🟣 Parte 13: Middlewares e Controle de Privilégios (`LoggerMiddleware`)
+* Interceptação com `req.originalUrl` e restrição multi-rota (`api-key-dog` e `api-key-admin`).
 
-### ⚡ Parte 14: Serverless e Edge Functions (`/api/hora-servidor`)
-* **Edge Runtime:** Execução sem servidor persistente para alta performance e baixa latência.
-* **Inspeção de Infraestrutura:** Identificação da região física de execução (`x-vercel-id`) e horário local do servidor.
+### ⚡ Parte 14: Serverless & Edge Functions (`/api/hora-servidor`)
+* Funções de altíssima performance no Vercel Edge Runtime inspecionando o datacenter (`x-vercel-id`).
 
-### 🟢 Parte 15: Módulo de Produtos e Logger Nativo (`/produtos`)
-* **Gerenciamento de Produtos:** Consulta de itens eletrônicos via `ProdutosService`.
-* **NestJS Logger:** Emissão de logs de aviso (`this.logger.warn`) para falhas de validação.
-* **Exceções HTTP Explícitas:** Lançamento direto de `BadRequestException` e `NotFoundException`.
+### 🟢 Parte 15: Logger Nativo e Exceções HTTP (`/produtos`)
+* Uso de `this.logger.warn` combinado com exceções explícitas (`BadRequestException`, `NotFoundException`).
 
-### 🟡 Parte 16: Validação de Schemas com Zod (`/colaboradores`)
-* **Validação Declarativa:** Criação de schemas com Zod (`colaboradorSchema`).
-* **Custom Validation Pipe:** Implementação de `ZodValidationPipe` para interceptar e validar o `@Body()`.
-* **Formatação de Erros:** Respostas com status `400 Bad Request` contendo lista de campos e mensagens amigáveis.
+### 🟡 Parte 16: Validação Schema-First com Zod (`/colaboradores`)
+* Validação declarativa com schemas do Zod e o pipe customizado `ZodValidationPipe`.
+
+---
+
+### 🎒 Escola API (`/alunos`)
+* **Persistência Real NoSQL:** Integração com **MongoDB & Mongoose** (`AlunoSchema` com índice único em `matricula`).
+* **Segurança e Sanitização Global:** Ativação do **ValidationPipe** no `main.ts` (`whitelist`, `forbidNonWhitelisted`, `transform`).
+* **DTOs com Class-Validator:** Contrato estrito no `CreateAlunoDto` com validações para nome, idade, matrícula e lista de cursos.
 
 ---
 
 ## 🚦 Endpoints da Aplicação
 
-| Método | Rota | Descrição | Status Code | Payload / Params / Headers |
+| Método | Rota | Origem | Descrição | Status Code |
 | :--- | :--- | :--- | :--- | :--- |
-| `GET` | `/Status` | Verifica a integridade da API | `200 OK` | N/A |
-| `POST` | `/colaboradores` | Cadastra um colaborador validador por Zod | `201 Created` / `400` | Body: `{"nome", "email", "idade", "departamento"}` |
-| `GET` | `/admin` | Painel administrativo protegido | `200 OK` / `403` | Header: `api-key-admin: administrator` |
-| `GET` | `/secret` | Rota secreta do sistema | `200 OK` / `403` | Header: `api-key-dog: cachorro` |
-| `GET` | `/convidados` | Lista todos os convidados | `200 OK` | N/A |
-| `POST` | `/convidados` | Cadastra um novo convidado | `201 Created` | Body: `{"nome": "Yuri", "idade": 21}` |
-| `PATCH` | `/convidados` | Atualiza a idade de um convidado | `200 OK` | Query: `id`, Body: `{"idade": 21}` |
-| `DELETE` | `/convidados/:id` | Remove um convidado pelo ID | `204 No Content` | Route Param: `id` |
-| `GET` | `/livros/:id` | Busca um livro específico pelo ID | `200 OK` | Route Param: `id` (numérico) |
-| `POST` | `/midia/upload` | Realiza upload de uma imagem | `201 Created` | Multipart Form: `arquivo` |
-| `GET` | `/secreto` | Rota protegida por chave | `200 OK` / `403` | Header: `x-api-key: neyma` |
-| `GET` | `/api/hora-servidor` | Edge Function: Horário e Região | `200 OK` | N/A |
-| `GET` | `/produtos/:id` | Busca um produto pelo ID | `200 OK` / `400` / `404` | Route Param: `id` (numérico) |
+| `POST` | `/alunos` | Projeto Escola API | Cadastra um novo aluno no MongoDB | `201 Created` / `400` |
+| `GET` | `/alunos` | Projeto Escola API | Lista todos os alunos do banco | `200 OK` |
+| `GET` | `/alunos/:id` | Projeto Escola API | Busca um aluno pelo `_id` | `200 OK` / `404` |
+| `PATCH` | `/alunos/:id` | Projeto Escola API | Atualiza dados de um aluno | `200 OK` / `404` |
+| `DELETE` | `/alunos/:id` | Projeto Escola API | Remove um aluno do banco | `200 OK` / `404` |
+| `POST` | `/colaboradores` | Parte 16 | Cadastra colaborador com validação Zod | `201 Created` / `400` |
+| `GET` | `/produtos/:id` | Parte 15 | Busca produto com Logger e tratamento | `200 OK` / `400` / `404` |
+| `GET` | `/api/hora-servidor`| Parte 14 | Edge Function serverless | `200 OK` |
+| `GET` | `/admin` | Parte 13 | Rota protegida por `api-key-admin` | `200 OK` / `403` |
+| `GET` | `/secret` | Parte 13 | Rota secreta protegida por `api-key-dog` | `200 OK` / `403` |
+| `GET` | `/secreto` | Parte 12 | Rota protegida por `x-api-key` | `200 OK` / `403` |
+| `POST` | `/midia/upload` | Parte 11 | Upload de imagem com Multer | `201 Created` / `400` |
+| `GET` | `/livros/:id` | Parte 10 | Busca de livro via `ParseIntPipe` | `200 OK` / `400` |
+| `GET` | `/convidados` | Parte 08-09 | Lista convidados em memória | `200 OK` |
+| `GET` | `/Status` | Parte 07-16 | Endpoint de verificação de status | `200 OK` |
 
 ---
 
-## 🧪 Testando as Rotas no Insomnia
-
-### 1. Validação com Zod (`/colaboradores`)
-* **`POST http://localhost:3000/colaboradores`**
-  * **Body Sucesso:** `{"nome": "Carlos Silva", "email": "carlos@empresa.com", "idade": 30, "departamento": "TI"}`
-  * **Body Erro:** `{"nome": "Ana", "email": "invalido", "idade": 12, "departamento": "Vendas"}`
-
-### 2. Status da Aplicação (`/Status`)
-* **`GET http://localhost:3000/Status`**
-
-### 3. Módulo de Produtos (`/produtos`)
-* **`GET http://localhost:3000/produtos/1`**
-
-### 4. Edge Function (`/api/hora-servidor`)
-* **`GET http://localhost:3000/api/hora-servidor`**
-
----
-
-## 💻 Como Executar o Projeto
+## 💻 Como Executar o Repositório
 
 ```bash
-# 1. Instalar as dependências (incluindo o Zod)
+# 1. Instalar as dependências
 npm install
 
-# 2. Executar em modo de desenvolvimento NestJS
+# 2. Iniciar o servidor em modo de desenvolvimento
 npm run start:dev
 
 # 3. Executar os testes unitários
