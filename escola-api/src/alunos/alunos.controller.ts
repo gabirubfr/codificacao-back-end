@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, DefaultValuePipe, ParseIntPipe } from "@nestjs/common";
 import { AlunosService } from "./alunos.service.js";
 import { CreateAlunoDto } from "./dto/create-aluno.dto.js";
 import { UpdateAlunoDto } from "./dto/update-aluno.dto.js";
-import { ApiTags, ApiOperation, ApiResponse } from "@nestjs/swagger";
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery } from "@nestjs/swagger";
 
 @ApiTags('alunos')
 @Controller('alunos')
@@ -45,8 +45,42 @@ export class AlunosController {
         status: 500,
         description: 'Erro interno do servidor ou serviço indisponível.'
     })
-    findAll(){
-        return this.alunoService.findAll();
+
+    // //!TODOS OS ALUNOS
+    // findAll(){
+    //     return this.alunoService.findAll();
+    // }
+    @Get()
+    @ApiOperation({
+        summary: 'Retorna a lista de alunos cadastrados com paginação',
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Lista de alunos retornada com sucesso.'
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Nenhum aluno encontrado.'
+    })
+    @ApiResponse({
+        status: 500,
+        description: 'Erro interno do servidor ou serviço indisponível.'
+    })
+    @ApiQuery({
+        name: 'page',
+        required: false,
+        type: Number,
+        description: 'Número da página(padrão: 1)'
+    })
+    @ApiQuery({
+        name: 'limit',
+        required: false,
+        type: Number,
+        description: 'Itens por página(padrão: 10)'
+    })
+    findAllPage(@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number){
+        return this.alunoService.findAllPage(page, limit);
     }
     @Get(':id')
     @ApiOperation({
