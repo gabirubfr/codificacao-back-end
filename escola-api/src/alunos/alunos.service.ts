@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { CreateAlunoDto } from "./dto/create-aluno.dto.js";
-import { UpdateAlunoDto } from "./dto/update-aluno.js";
+import { UpdateAlunoDto } from "./dto/update-aluno.dto.js";
 import { Aluno, AlunoDocument } from "./schemas/aluno.schema.js";
 
 @Injectable()
