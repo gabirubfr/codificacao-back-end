@@ -1,52 +1,60 @@
-# 🏫 Escola API — Gestão Escolar com NestJS, MongoDB (Mongoose) e ValidationPipe Global
+# 🏫 Escola API — Gestão Escolar com NestJS, MongoDB & Swagger
 
-O **escola-api** é um projeto desenvolvido à parte da jornada principal para aplicar a integração do NestJS v12 com o banco de dados NoSQL **MongoDB** através do Mongoose. Além da persistência real de dados, o projeto implementa um **ValidationPipe global** com travas rígidas de sanitização e validação declarativa de payloads via `class-validator`.
-
----
-
-## 🛠️ Tecnologias e Recursos Aplicados
-
-* **Persistência NoSQL com Mongoose:** Modelagem de documentos utilizando `@Schema()`, `@Prop()`, `SchemaFactory` e a tipagem `AlunoDocument`.
-* **Matrícula Única (`unique: true`):** Criação de índice único diretamente no schema do MongoDB para evitar duplicidade de registros.
-* **ValidationPipe Global (`main.ts`):**
-  * `whitelist: true` — Remove campos que não pertençam ao DTO.
-  * `forbidNonWhitelisted: true` — Lança exceção `400 Bad Request` se a requisição contiver propriedades não mapeadas.
-  * `transform: true` — Converte tipos e instancia objetos DTO automaticamente.
-* **Validação de DTOs (`CreateAlunoDto`):** Decorators como `@IsString()`, `@IsInt()`, `@Min(0)`, `@IsArray()`, `@ArrayMinSize(1)` e mensagens customizadas em português.
+O **escola-api** é um projeto desenvolvido à parte focado na configuração, instalação e gerenciamento de uma API RESTful utilizando **NestJS v12** integrado ao banco de dados NoSQL **MongoDB (Mongoose)**, com documentação interativa via **Swagger / OpenAPI** e sanitização rigorosa de payloads (`class-validator`).
 
 ---
 
-## 📂 Arquivos do Projeto
+## 🛠️ Tecnologias & Recursos Aplicados
 
-* `src/main.ts`: Configuração do `ValidationPipe` global.
+* **Runtime:** Node.js (ES Modules)
+* **Framework Backend:** NestJS v12
+* **Banco de Dados / ODM:** MongoDB & Mongoose (`@nestjs/mongoose`)
+* **Documentação Interativa:** OpenAPI / Swagger (`@nestjs/swagger`) acessível na rota `/api`.
+* **Sanitização Global (`main.ts`):** `ValidationPipe` configurado com `whitelist: true`, `forbidNonWhitelisted: true` e `transform: true`.
+* **Validação de Payloads (`CreateAlunoDto`):** Regras de validação declarativa (`class-validator`) mapeadas com exemplos no Swagger (`@ApiProperty`).
+* **Modelagem NoSQL (`AlunoSchema`):** Persistência no MongoDB com índice único na propriedade `matricula` (`unique: true`).
+
+---
+
+## 📂 Arquivos do Módulo `/alunos`
+
+* `src/main.ts`: Bootstrapping da aplicação, `ValidationPipe` global e inicialização do `SwaggerModule` na rota `/api`.
 * `src/schemas/aluno.schema.ts`: Schema do Mongoose para a coleção de alunos.
-* `src/dto/create-aluno.dto.ts`: DTO contendo validações e contrato de dados para cadastro.
-* `src/alunos.service.ts`: Serviço contendo as operações CRUD integradas ao `alunoModel`.
+* `src/create.aluno.dto.ts`: DTO com validações e decorators de documentação OpenAPI (`@ApiProperty`).
+* `src/aluno.controller.ts`: Controller REST documentado com `@ApiTags`, `@ApiOperation` e respostas HTTP (`@ApiResponse`).
+* `src/alunos.service.ts`: Camada de serviço com operações CRUD integradas ao `alunoModel`.
 
 ---
 
-## 🚦 Endpoints do Módulo (`/alunos`)
+## 📖 Documentação Interativa (Swagger)
 
-| Método | Rota | Descrição | Status Code | Payload / Params |
+Acesse a interface gráfica do Swagger para testar as rotas e visualizar os schemas diretamente pelo navegador:
+
+* **URL do Swagger:** `http://localhost:3000/api`
+
+---
+
+## 🚦 Endpoints da API (`/alunos`)
+
+| Método | Rota | Descrição | Status Code | Respostas HTTP Mapeadas |
 | :--- | :--- | :--- | :--- | :--- |
-| `POST` | `/alunos` | Cadastra um novo aluno | `201 Created` / `400` | Body: `CreateAlunoDto` |
-| `GET` | `/alunos` | Lista todos os alunos do MongoDB | `200 OK` | N/A |
-| `GET` | `/alunos/:id` | Busca um aluno pelo `_id` do MongoDB | `200 OK` / `404` | Route Param: `id` |
-| `PATCH` | `/alunos/:id` | Atualiza dados de um aluno pelo `_id` | `200 OK` / `404` | Route Param: `id`, Body: `UpdateAlunoDto` |
-| `DELETE` | `/alunos/:id` | Remove um aluno pelo `_id` do banco | `200 OK` / `404` | Route Param: `id` |
+| `POST` | `/alunos` | Cria a matrícula do aluno | `201 Created` | `201` (Sucesso), `400` (Dados inválidos), `500` (Matrícula duplicada) |
+| `GET` | `/alunos` | Retorna a lista de alunos cadastrados | `200 OK` | `200` (Sucesso), `404` (Não encontrado), `500` (Erro interno) |
+| `GET` | `/alunos/:id` | Retorna um aluno específico pelo ID | `200 OK` | `200` (Sucesso), `404` (Não encontrado), `500` (Erro interno) |
+| `PATCH` | `/alunos/:id` | Atualiza os dados de um aluno pelo ID | `200 OK` | `200` (Sucesso), `404` (Não encontrado), `500` (Erro interno) |
+| `DELETE` | `/alunos/:id` | Remove um aluno específico pelo ID | `200 OK` | `200` (Sucesso), `404` (Não encontrado), `500` (Erro interno) |
 
 ---
 
-## 🧪 Testando no Insomnia
+## 🧪 Exemplo de Payload (`POST /alunos`)
 
-### 1. Criar Aluno (`POST /alunos`)
-* **Método:** `POST`
-* **URL:** `http://localhost:3000/alunos`
-* **Body (JSON):**
 ```json
 {
-  "nome": "Yuri Marques",
+  "nome": "João da Silva",
   "idade": 21,
-  "matricula": "2026001",
-  "cursos": ["NestJS v12", "MongoDB"]
+  "matricula": "1234",
+  "cursos": [
+    "Ciência da Computação",
+    "Recursos Humanos"
+  ]
 }
