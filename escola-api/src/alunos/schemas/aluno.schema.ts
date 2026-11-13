@@ -26,6 +26,11 @@ export class Aluno {
     ])
     cursos: string[];
 
+    @Prop({
+        default: true,
+    })
+    ativo: boolean;
+
 }
 
 export const AlunoSchema = SchemaFactory.createForClass(Aluno);
