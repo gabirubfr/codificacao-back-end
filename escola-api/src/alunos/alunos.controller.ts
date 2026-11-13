@@ -29,22 +29,22 @@ export class AlunosController {
     create(@Body() createAlunoDto: CreateAlunoDto){
         return this.alunoService.create(createAlunoDto)
     }
-    @Get()
-    @ApiOperation({
-        summary: 'Retorna a lista de alunos cadastrados',
-    })
-    @ApiResponse({
-        status: 200,
-        description: 'Lista de alunos retornada com sucesso.'
-    })
-    @ApiResponse({
-        status: 404,
-        description: 'Nenhum aluno encontrado.'
-    })
-    @ApiResponse({
-        status: 500,
-        description: 'Erro interno do servidor ou serviço indisponível.'
-    })
+    // @Get()
+    // @ApiOperation({
+    //     summary: 'Retorna a lista de alunos cadastrados',
+    // })
+    // @ApiResponse({
+    //     status: 200,
+    //     description: 'Lista de alunos retornada com sucesso.'
+    // })
+    // @ApiResponse({
+    //     status: 404,
+    //     description: 'Nenhum aluno encontrado.'
+    // })
+    // @ApiResponse({
+    //     status: 500,
+    //     description: 'Erro interno do servidor ou serviço indisponível.'
+    // })
 
     // //!TODOS OS ALUNOS
     // findAll(){
@@ -177,5 +177,24 @@ export class AlunosController {
     })
     remove(@Param('id') id: string){
         return this.alunoService.remove(id);
+    }
+    @Patch(':id/restaurar')
+    @ApiOperation({
+        summary: 'Restaura um aluno que foi removido por (Soft Delete)',
+    })
+    @ApiResponse({
+        status: 200,
+        description: 'Aluno reativado com sucesso',
+    })
+    @ApiResponse({
+        status: 404,
+        description: 'Aluno não encontrado',
+    })
+    @ApiResponse({
+        status: 500,
+        description: 'Erro interno no servidor'
+    })
+    restore(@Param('id') id: string){
+        return this.alunoService.restore(id);
     }
 }
