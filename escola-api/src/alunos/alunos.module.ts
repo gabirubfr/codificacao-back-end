@@ -5,12 +5,12 @@ import { AlunosController } from "./alunos.controller.js";
 import { Aluno, AlunoSchema } from "./schemas/aluno.schema.js";
 
 @Module({
-    imports: [MongooseModule.forFeature ([{
-        name: Aluno.name, schema: AlunoSchema
-    }
+imports:[MongooseModule.forFeature([{
+    name: Aluno.name, schema: AlunoSchema
+}
 ])],
-    controllers: [AlunosController],
-    providers: [AlunosService]
+controllers:[ AlunosController],
+providers:[AlunosService],
 })
 
 export class AlunosModule {}
